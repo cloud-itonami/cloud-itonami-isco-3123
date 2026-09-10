@@ -62,17 +62,17 @@ human-in-the-loop interrupt/resume via checkpointing.
                                            +-> :hold               (:hard? true)
 ```
 
-- `src/construction_supervision/store.cljc` — `Store` protocol +
+- `src/construction_supervision/store.kotoba` — `Store` protocol +
   `MemStore`: registered sites, committed records, an append-only
   audit ledger.
-- `src/construction_supervision/advisor.cljc` — `Advisor` protocol;
+- `src/construction_supervision/advisor.kotoba` — `Advisor` protocol;
   `mock-advisor` (deterministic, default) proposes a supervision
   operation from a request; `llm-advisor` wraps a
   `langchain.model/ChatModel` — either way the advisor only ever
   produces a `:propose`-effect proposal, never a committed record, and
   LLM parse failures always yield `confidence 0.0` (forces escalation,
   never fabricated confidence).
-- `src/construction_supervision/governor.cljc` —
+- `src/construction_supervision/governor.kotoba` —
   `ConstructionSupervisionGovernor/check`: a pure function, wired as
   its own `:govern` node. Hard invariants (unregistered site, a
   proposal whose `:effect` isn't `:propose`) always route to `:hold`.
@@ -83,7 +83,7 @@ human-in-the-loop interrupt/resume via checkpointing.
   (`actor/approve!`), matching the README's robotics-premise statement
   that operating near active equipment and clearing a site for the
   next work phase always require human sign-off.
-- `src/construction_supervision/actor.cljc` — `build-graph`,
+- `src/construction_supervision/actor.kotoba` — `build-graph`,
   `run-request!`, `approve!`: the `langgraph.graph/state-graph` wiring
   itself.
 
