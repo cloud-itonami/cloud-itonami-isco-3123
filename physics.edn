@@ -1,0 +1,34 @@
+;; What this vertical's robot physically does, declared for
+;; kotoba.robotics.process (kotoba-lang/robotics). `kbb -M:physics` runs it.
+;;
+;; README "Robotics premise": a site-walkthrough robot performs
+;; safety-checklist inspection and progress-photo documentation for
+;; construction supervisors (ISCO 3123). Its physical work is driving the
+;; site with a photo mast: braking on packed ground with the mast raised,
+;; and the time a full walkthrough takes.
+;;
+;; Every number without a cited source is marked `estimate` in its :basis.
+;; Replacing an estimate with a sourced value is this bot's growth work.
+{:physics/schema "itonami.physical-ai.spec.v1"
+ :repo "cloud-itonami/cloud-itonami-isco-3123"
+ :cases
+ [{:id :photo-mast-site-stop
+   :kind :transport
+   :procedure "site robot drives between photo points with its progress-photo mast raised and brakes at each point"
+   :params {:mass-kg 70.0 :payload-kg 4.0 :distance-m 30.0 :v-max-mps 1.0 :a-max-mps2 0.5
+            :brake-decel-mps2 1.2 :drive-force-n 300.0 :crr 0.05
+            :support-half-length-m 0.30}
+   :sweep {:param :cog-height-m :values [0.5 0.7 0.9 1.1 1.3]}
+   :quantity :min-tipover-margin
+   :limit {:min 0.5 :basis "estimate: keep half the static tip-over reserve on packed site ground, where ruts and slopes eat into the flat-ground margin"}
+   :boundary {:lo 0.2 :hi 2.5}}
+  {:id :site-walkthrough-round
+   :kind :transport
+   :procedure "robot drives the full safety-checklist walkthrough route across the site"
+   :params {:max-time-s 3600.0 :mass-kg 70.0 :payload-kg 4.0 :v-max-mps 1.0 :a-max-mps2 0.5
+            :brake-decel-mps2 1.2 :drive-force-n 300.0 :crr 0.05
+            :cog-height-m 0.70 :support-half-length-m 0.30}
+   :sweep {:param :distance-m :values [100.0 200.0 400.0 600.0 800.0]}
+   :quantity :cycle-time-s
+   :limit {:max 480.0 :basis "estimate: a walkthrough that fits the morning toolbox-meeting window before work starts"}
+   :boundary {:lo 10.0 :hi 2000.0}}]}
